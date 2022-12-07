@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" shrink-to-fit=no">
+    <style type="text/css">
+        body {
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          background-color: black;
+        }
+        html {
+          width: 100%;
+          height: 100%;
+          background-color: black;
+        }
+  
+        .embed-container iframe,
+        .embed-container object,
+        .embed-container embed {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100% !important;
+          height: 100% !important;
+        }
+      </style>
+</head>
+<body>
+	<!-- <div class="embed-container">
+        <div id="player"></div>
+      </div> -->
+
+    <script>
+		if(!document.__defineGetter__) {
+			Object.defineProperty(document, 'cookie', {
+				get: function(){return ''},
+				set: function(){return true},
+			});
+		} else {
+			document.__defineGetter__("cookie", function() { return '';} );
+			document.__defineSetter__("cookie", function() {} );
+		}
+	</script>
+
+    <script src="https://geo.dailymotion.com/libs/player/xag2y.js"></script>
+    <div id="player1"></div>
+    <script>
+        // var platform = "android";
+        // var currentPlayer;
+        // currentPlayer = dailymotion.createPlayer("player1", {
+        //     video: "x84sh87",
+        //     params: {
+        //         startTime: 0,
+        //         loop: false,
+        //         mute: false,
+        //     },
+        // })
+        // .then((player) => {
+        //     player.on(dailymotion.events.PLAYER_ASPECTRATIOCHANGE, (event) => {
+        //         sendMessage('AspectRatioChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_CRITICALPATHREADY, (event) => {
+        //         // sendMessage('AspectRatioChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_ERROR, (event) => {
+        //         sendMessage('PlayerError', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_PIPEXPANDEDCHANGE, (event) => {
+        //         sendMessage('PIPExpandedChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_PLAYBACKPERMISSION, (event) => {
+        //         sendMessage('{PlaybackPermission}', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_END, (event) => {
+        //         sendMessage('PlayerEnd', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_PRESENTATIONMODECHANGE, (event) => {
+        //         sendMessage('PresentationModeChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_CONTROLSCHANGE, (event) => {
+        //         firstPlay();
+        //         sendMessage('ControlChange', event);
+        //     })
+            
+        //     player.on(dailymotion.events.PLAYER_SCALEMODECHANGE, (event) => {
+        //         sendMessage('ScaleMOdeChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_START, (event) => {
+        //         sendMessage('PlayerStart', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_VIDEOCHANGE, (event) => {
+        //         firstPlay();
+        //         sendMessage('VideoChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_VIEWABILITYCHANGE, (event) => {
+        //         sendMessage('ViewabilityChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_VOLUMECHANGE, (event) => {
+        //         firstPlay();
+        //         sendMessage('VolumeChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.PLAYER_HEAVYADSINTERVENTION, (event) => {
+        //         // sendMessage('AspectRatioChange', event);
+        //     })
+
+        //     player.on(dailymotion.events.VIDEO_PLAY, () => {
+		// 		handleFullScreenForMobilePlatform();
+		// 	})
+        // })
+        // .catch((e) => {
+        //     sendMessage('PlayerErrorCatch', e);
+        // });
+
+        // // window.addEventListener('message', (event) => {
+        // //     try {
+        // //     var data = JSON.parse(event.data);
+
+        // //     if(data.function){
+        // //         var rawFunction = data.function.replaceAll('<<quote>>', '"');
+        // //         var result = eval(rawFunction);
+
+        // //         if(data.key) {
+        // //         var message = {}
+        // //         message[data.key] = result
+        // //         var messageString = JSON.stringify(message);
+
+        // //         event.source.postMessage(messageString , '*');
+        // //         }
+        // //     }
+        // //     } catch (e) { }
+        // // }, false);
+
+        // // window.addEventListener('click', function(){
+        // //     console.log("clicked  message ::: ");
+        // // }, false);
+
+        // // window.addEventListener('change', function(){
+        // //     console.log("change  message ::: ");
+        // // }, false);
+
+        // // window.onresize = function () {
+        // //     currentPlayer.setSize(window.innerWidth, window.innerHeight);
+        // // };
+
+        function sendMessage(key, data) {
+            var message = {}
+            message[key] = data
+            var messageString = JSON.stringify(message);
+
+            switch(platform) {
+                case 'android':
+                    DMPlayer.postMessage(messageString);
+                    break;
+                case 'ios':
+                    DMPlayer.postMessage(messageString, '*');
+                    break;
+                // case 'web':
+                //     window.parent.postMessage(messageString, '*');
+                //     break;
+            }
+        }
+
+        // // all function from SDK dailymotion in hire....
+
+        // function test1(){
+        //     console.log("Hello From Flutter");
+        //     // currentPlayer.play();
+        // }
+
+        // function firstPlay(){
+        //     const btnPlay = window.document.getElementsByClassName("button_play")[0];
+        //     console.log("btnPlay ::: "+btnPlay);
+        //     // btnPlay.onclick = function(){
+        //     //     console.log("play onclick");
+        //     // }
+        //     btnPlay.addEventListener('click', function(){
+        //         console.log("play onclick");
+        //     }, false);
+        // }
+
+        // function handleFullScreenForMobilePlatform() {
+        //     console.log("on HandleFullscreenMobile");
+        //     window.document.getElementsByClassName("fullscreen_toggle_button icon_button");
+        //     dd.onclick = function(){
+        //         console.log("functon :: onlick sending to flutter ecosystem");
+        //     }
+        // }
+
+        var platform = "android";
+        var currentPlayer;
+        let rootPlayer;
+        currentPlayer = dailymotion.createPlayer("player1", {
+            video: "x84sh87",
+            params: {
+                startTime: 0,
+                loop: false,
+                mute: false,
+            },
+        })
+        .then((player) => {
+            rootPlayer = player;
+
+            player.on(dailymotion.events.PLAYER_CRITICALPATHREADY, (event) => {
+                    // firstPlay();
+                    sendMessage('AspectRatioChange', event);
+                    // player.play();
+            })
+            
+        });
+
+
+        function firstPlay() {
+            rootPlayer.play();               
+        }
+    </script>
+</body>
+</html>
