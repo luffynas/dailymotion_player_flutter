@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -53,9 +51,7 @@ class _DailymotionPlayerBuilderState extends State<DailymotionPlayerBuilder>
   @override
   void didChangeMetrics() {
     final physicalSize = SchedulerBinding.instance.window.physicalSize;
-    log('message ::: didChangeMetrics ::: physicalSize.width :: ${physicalSize.width}');
-    log('message ::: didChangeMetrics ::: physicalSize.height :: ${physicalSize.height}');
-    final controller = widget.player.controller;
+    // final controller = widget.player.controller;
     if (physicalSize.width > physicalSize.height) {
       // controller.updateValue(controller.value.copyWith(isFullScreen: true));
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -70,7 +66,6 @@ class _DailymotionPlayerBuilderState extends State<DailymotionPlayerBuilder>
 
   @override
   Widget build(BuildContext context) {
-    log('message ::: didChangeMetrics ::: build');
     final _player = Container(
       key: playerKey,
       child: WillPopScope(

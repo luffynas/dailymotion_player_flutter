@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -99,7 +97,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
               handlerName: 'Ready',
               callback: (_) {
                 _isPlayerReady = true;
-                log('message :: handlerName: Ready, :: $_isPlayerReady');
                 if (_onLoadStopCalled) {
                   controller!.updateValue(
                     controller!.value.copyWith(isReady: true),
@@ -107,64 +104,64 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
                 }
               },
             )
-            ..addJavaScriptHandler(
-              handlerName: 'StateChange',
-              callback: (args) {
-                log('message :: handlerName: StateChange, :: ${args.length}');
-                switch (args.first as int) {
-                  case -1:
-                    controller!.updateValue(
-                      controller!.value.copyWith(
-                        playerState: PlayerState.unStarted,
-                        isLoaded: true,
-                      ),
-                    );
-                    break;
-                  case 0:
-                    widget.onEnded?.call(controller!.metadata);
-                    controller!.updateValue(
-                      controller!.value.copyWith(
-                        playerState: PlayerState.ended,
-                      ),
-                    );
-                    break;
-                  case 1:
-                    controller!.updateValue(
-                      controller!.value.copyWith(
-                        playerState: PlayerState.playing,
-                        isPlaying: true,
-                        hasPlayed: true,
-                        errorCode: 0,
-                      ),
-                    );
-                    break;
-                  case 2:
-                    controller!.updateValue(
-                      controller!.value.copyWith(
-                        playerState: PlayerState.paused,
-                        isPlaying: false,
-                      ),
-                    );
-                    break;
-                  case 3:
-                    controller!.updateValue(
-                      controller!.value.copyWith(
-                        playerState: PlayerState.buffering,
-                      ),
-                    );
-                    break;
-                  case 5:
-                    controller!.updateValue(
-                      controller!.value.copyWith(
-                        playerState: PlayerState.cued,
-                      ),
-                    );
-                    break;
-                  default:
-                    throw Exception("Invalid player state obtained.");
-                }
-              },
-            )
+            // ..addJavaScriptHandler(
+            //   handlerName: 'StateChange',
+            //   callback: (args) {
+            //     log('message :: handlerName: StateChange, :: ${args.length}');
+            //     switch (args.first as int) {
+            //       case -1:
+            //         controller!.updateValue(
+            //           controller!.value.copyWith(
+            //             playerState: PlayerState.unStarted,
+            //             isLoaded: true,
+            //           ),
+            //         );
+            //         break;
+            //       case 0:
+            //         widget.onEnded?.call(controller!.metadata);
+            //         controller!.updateValue(
+            //           controller!.value.copyWith(
+            //             playerState: PlayerState.ended,
+            //           ),
+            //         );
+            //         break;
+            //       case 1:
+            //         controller!.updateValue(
+            //           controller!.value.copyWith(
+            //             playerState: PlayerState.playing,
+            //             isPlaying: true,
+            //             hasPlayed: true,
+            //             errorCode: 0,
+            //           ),
+            //         );
+            //         break;
+            //       case 2:
+            //         controller!.updateValue(
+            //           controller!.value.copyWith(
+            //             playerState: PlayerState.paused,
+            //             isPlaying: false,
+            //           ),
+            //         );
+            //         break;
+            //       case 3:
+            //         controller!.updateValue(
+            //           controller!.value.copyWith(
+            //             playerState: PlayerState.buffering,
+            //           ),
+            //         );
+            //         break;
+            //       case 5:
+            //         controller!.updateValue(
+            //           controller!.value.copyWith(
+            //             playerState: PlayerState.cued,
+            //           ),
+            //         );
+            //         break;
+            //       default:
+            //         throw Exception("Invalid player state obtained.");
+            //     }
+            //   },
+            // )
             ..addJavaScriptHandler(
               handlerName: 'PlaybackQualityChange',
               callback: (args) {
@@ -177,7 +174,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'PlaybackRateChange',
               callback: (args) {
-                log('message :: handlerName: PlaybackRateChange, :: $args');
                 final num rate = args.first;
                 controller!.updateValue(
                   controller!.value.copyWith(playbackRate: rate.toDouble()),
@@ -187,7 +183,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'Errors',
               callback: (args) {
-                log('message :: handlerName: Errors, :: $args');
                 controller!.updateValue(
                   controller!.value.copyWith(errorCode: int.parse(args.first)),
                 );
@@ -196,7 +191,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'VideoData',
               callback: (args) {
-                log('message :: handlerName: VideoData, :: $args');
                 controller!.updateValue(
                   controller!.value.copyWith(
                       metaData: DailymotionMetaData.fromRawData(args.first)),
@@ -206,7 +200,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'VideoTime',
               callback: (args) {
-                log('message :: handlerName: VideoTime, :: $args');
                 final position = args.first * 1000;
                 final num buffered = args.last;
                 controller!.updateValue(
@@ -221,11 +214,13 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'VideoEnd',
               callback: (args) {
-                log('message ::: VideoEnd :: $args');
+                widget.onEnded?.call(controller!.metadata);
                 controller!.updateValue(
                   controller!.value.copyWith(
                     playerState: PlayerState.unStarted,
                     isLoaded: true,
+                    isPlaying: false,
+                    hasPlayed: false,
                   ),
                 );
               },
@@ -233,7 +228,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'Playing',
               callback: (args) {
-                log('message ::: Playing :: $args');
                 controller!.updateValue(
                   controller!.value.copyWith(
                     playerState: PlayerState.playing,
@@ -247,7 +241,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'Buffering',
               callback: (args) {
-                log('message ::: Buffering :: $args');
                 controller!.updateValue(
                   controller!.value.copyWith(
                     playerState: PlayerState.buffering,
@@ -258,13 +251,16 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             ..addJavaScriptHandler(
               handlerName: 'Progress',
               callback: (args) {
-                log('message ::: Progress :: $args');
+                controller!.updateValue(
+                  controller!.value.copyWith(
+                    playerState: PlayerState.buffering,
+                  ),
+                );
               },
             )
             ..addJavaScriptHandler(
               handlerName: 'VideoPause',
               callback: (args) {
-                log('message ::: Progress :: $args');
                 controller!.updateValue(
                   controller!.value.copyWith(
                     playerState: PlayerState.paused,
@@ -275,7 +271,7 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             );
         },
         onConsoleMessage: (controller, consoleMessage) {
-          log('message ::: consoleMessage :: $consoleMessage');
+          // onConsole from log javascript
         },
         onLoadStop: (_, __) {
           _onLoadStopCalled = true;
@@ -478,62 +474,52 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
 
               player.on(dailymotion.events.PLAYER_CRITICALPATHREADY, (event) => {
                 var message = JSON.stringify(event);
-                console.log('PLAYER_CRITICALPATHREADY '+message);
+                var result = JSON.parse(message);
                 window.flutter_inappwebview.callHandler('Ready');
-              })
+                sendVideoData(result);
+              }, { once: true })
             
               player.on(dailymotion.events.PLAYER_VOLUMECHANGE, (event) => {
                 var message = JSON.stringify(event);
-                console.log('PLAYER_VOLUMECHANGE '+message);
               })
-            
-
             
               player.on(dailymotion.events.VIDEO_PLAY, (event) => {
                 var message = JSON.stringify(event);
                 var result = JSON.parse(message);
-                console.log('VIDEO_PLAY '+result);
                 sendPlayerStateChange(result);
+                window.flutter_inappwebview.callHandler('VideoPlay');
               })
           
               player.on(dailymotion.events.VIDEO_BUFFERING, (event) => {
                 var message = JSON.stringify(event);
                 var result = JSON.parse(message);
-                console.log('VIDEO_BUFFERING '+result);
                 sendPlayerStateChange(result);
+                window.flutter_inappwebview.callHandler('VideoBuffering');
               })
             
               player.on(dailymotion.events.VIDEO_DURATIONCHANGE, (event) => {
                 var message = JSON.stringify(event);
-                console.log('VIDEO_DURATIONCHANGE '+message);
                 sendPlayerStateChange(message);
               })
             
               player.on(dailymotion.events.VIDEO_PAUSE, (event) => {
                 var message = JSON.stringify(event);
-                console.log('VIDEO_PAUSE '+message);
-                // sendPlayerStateChange(message);
                 window.flutter_inappwebview.callHandler('VideoPause');
               })
             
               player.on(dailymotion.events.VIDEO_END, (event) => {
                 var message = JSON.stringify(event);
                 var result = JSON.parse(message);
-                console.log('VIDEO_END '+message);
-                // sendPlayerStateChange(result);
                 window.flutter_inappwebview.callHandler('VideoEnd', message);
               })
             
               player.on(dailymotion.events.VIDEO_PLAYING, (event) => {
                 var message = JSON.stringify(event);
-                console.log('VIDEO_PLAYING '+message);
-                // sendPlayerStateChange(message);
                 window.flutter_inappwebview.callHandler('Playing', message);
               })
             
               player.on(dailymotion.events.VIDEO_PROGRESS, (event) => {
                 var message = JSON.stringify(event);
-                console.log('VIDEO_PROGRESS '+message);
                 window.flutter_inappwebview.callHandler('Progress', message);
               })
             
@@ -549,28 +535,47 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             
               player.on(dailymotion.events.VIDEO_SEEKSTART, (event) => {
                 var message = JSON.stringify(event);
-                var result = JSON.parse(message);
-                console.log('VIDEO_SEEKSTART '+result);
+                var result = JSON.parse(message)
                 sendPlayerStateChange(result);
               })
             
               player.on(dailymotion.events.VIDEO_SEEKEND, (event) => {
                 var message = JSON.stringify(event);
                 var result = JSON.parse(message);
-                console.log('VIDEO_SEEKEND '+result);
                 sendPlayerStateChange(result);
               })
             
               player.on(dailymotion.events.VIDEO_START, (event) => {
                 var message = JSON.stringify(event);
-                console.log('VIDEO_START '+message);
               })
             
               player.on(dailymotion.events.VIDEO_TIMECHANGE, (event) => {
                 var message = JSON.stringify(event);
                 var result = JSON.parse(message);
-                console.log('VIDEO_TIMECHANGE '+message);
                 sendPlayerStateChange(result);
+              })
+
+              // AD EVENT
+              player.on(dailymotion.events.AD_PLAY, (event) => {
+                var message = JSON.stringify(event);
+                var result = JSON.parse(message);
+                sendPlayerStateChange(result);
+              })
+            
+              player.on(dailymotion.events.AD_DURATIONCHANGE, (event) => {
+                var message = JSON.stringify(event);
+                sendPlayerStateChange(message);
+              })
+            
+              player.on(dailymotion.events.AD_PAUSE, (event) => {
+                var message = JSON.stringify(event);
+                window.flutter_inappwebview.callHandler('VideoPause');
+              })
+            
+              player.on(dailymotion.events.AD_END, (event) => {
+                var message = JSON.stringify(event);
+                var result = JSON.parse(message);
+                window.flutter_inappwebview.callHandler('VideoEnd', message);
               })
             }).catch(error=> {
               alert(JSON.stringify(error))
@@ -579,13 +584,11 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             function sendPlayerStateChange(playerState) {
               clearTimeout(timerId);
               window.flutter_inappwebview.callHandler('StateChange', playerState);
-              console.log("Player State :: "+playerState);
               if (playerState == 1) {
                   // startSendCurrentTimeInterval();
                   // sendVideoData(currentPlayer);
               }
               startSendCurrentTimeInterval(playerState);
-              sendVideoData(playerState);
             }
 
             function sendVideoData(player) {
@@ -599,9 +602,6 @@ class _RawDailymotionPlayerState extends State<RawDailymotionPlayer>
             }
 
             function startSendCurrentTimeInterval(playerState) {
-              console.log("playerState.videoTime :: "+playerState.videoTime);
-              console.log("playerState.videoDuration :: "+playerState.videoDuration);
-
               timerId = setInterval(function () {
                   window.flutter_inappwebview.callHandler('VideoTime', playerState.videoTime, playerState.videoDuration);
               }, 100);
